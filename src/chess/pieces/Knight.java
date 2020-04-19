@@ -10,6 +10,10 @@ public class Knight extends ChessPiece {
 	public Knight(Board board, Color color) {
 		super(board, color);
 	}
+	@Override
+	public String toString() {
+		return "N";
+	}
 
 	private boolean canMove(Position position) {
 		ChessPiece p = (ChessPiece) getBoard().piece(position);
@@ -63,9 +67,5 @@ public class Knight extends ChessPiece {
 		}
 		return mat;
 	}
-	@Override
-	public String toString() {
-		return "N";
-	}
-
+	
 }
