@@ -117,6 +117,7 @@ public class ChessMatch {
 		return (ChessPiece) capturedPiece;
 	}
 
+	//PEÇA PROMOVIDA
 	public ChessPiece replacePromotedPiece(String type) {
 		if (promoted == null) {
 			throw new IllegalStateException("There is no piece to be promoted");
@@ -136,6 +137,7 @@ public class ChessMatch {
 		return newPiece;
 	}
 
+	//Método auxiliar para instanciar a nova peça da promoção
 	private ChessPiece newPiece(String type, Color color) {
 		if (type.equals("B"))
 			return new Bishop(board, color);
