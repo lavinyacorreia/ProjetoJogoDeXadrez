@@ -2,13 +2,17 @@ package chess.pieces;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class Pawn extends ChessPiece {
 
-	public Pawn(Board board, Color color) {
+	private ChessMatch chessMatch;
+
+	public Pawn(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
+		this.chessMatch = chessMatch;
 	}
 
 	@Override
@@ -17,64 +21,76 @@ public class Pawn extends ChessPiece {
 
 		Position p = new Position(0, 0);
 
-		// White pawn
 		if (getColor() == Color.WHITE) {
 			p.setValues(position.getRow() - 1, position.getColumn());
 			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
-
 			p.setValues(position.getRow() - 2, position.getColumn());
-			// Testar se não há peça na próx casa do peão (primeira jogada), para validar
-			// andar 2 casas
 			Position p2 = new Position(position.getRow() - 1, position.getColumn());
 			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p) && getBoard().positionExists(p2)
 					&& !getBoard().thereIsAPiece(p2) && getMoveCount() == 0) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
-
-			// captura de peça na diagonal - esquerda
 			p.setValues(position.getRow() - 1, position.getColumn() - 1);
 			if (getBoard().positionExists(p) && isThereAnOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
-
-			// captura de peça na diagonal - direita
 			p.setValues(position.getRow() - 1, position.getColumn() + 1);
 			if (getBoard().positionExists(p) && isThereAnOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
-		}
-		else {
+
+			// #specialmove en passant white
+			if (position.getRow() == 3) {
+				Position left = new Position(position.getRow(), position.getColumn() - 1);
+				if (getBoard().positionExists(left) && isThereAnOpponentPiece(left)
+						&& getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
+					mat[left.getRow() - 1][left.getColumn()] = true;
+				}
+				Position right = new Position(position.getRow(), position.getColumn() + 1);
+				if (getBoard().positionExists(right) && isThereAnOpponentPiece(right)
+						&& getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {
+					mat[right.getRow() - 1][right.getColumn()] = true;
+				}
+			}
+		} else {
 			p.setValues(position.getRow() + 1, position.getColumn());
 			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
-
 			p.setValues(position.getRow() + 2, position.getColumn());
-			// Testar se não há peça na próx casa do peão (primeira jogada), para validar
-			// andar 2 casas
 			Position p2 = new Position(position.getRow() + 1, position.getColumn());
 			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p) && getBoard().positionExists(p2)
 					&& !getBoard().thereIsAPiece(p2) && getMoveCount() == 0) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
-
-			// captura de peça na diagonal - esquerda
 			p.setValues(position.getRow() + 1, position.getColumn() - 1);
 			if (getBoard().positionExists(p) && isThereAnOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
-
-			// captura de peça na diagonal - direita
 			p.setValues(position.getRow() + 1, position.getColumn() + 1);
 			if (getBoard().positionExists(p) && isThereAnOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
+
+			// #specialmove en passant black
+			if (position.getRow() == 4) {
+				Position left = new Position(position.getRow(), position.getColumn() - 1);
+				if (getBoard().positionExists(left) && isThereAnOpponentPiece(left)
+						&& getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
+					mat[left.getRow() + 1][left.getColumn()] = true;
+				}
+				Position right = new Position(position.getRow(), position.getColumn() + 1);
+				if (getBoard().positionExists(right) && isThereAnOpponentPiece(right)
+						&& getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {
+					mat[right.getRow() + 1][right.getColumn()] = true;
+				}
+			}
 		}
 		return mat;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "P";
